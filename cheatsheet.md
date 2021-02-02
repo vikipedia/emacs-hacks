@@ -25,3 +25,12 @@ come back to position from where we moved to end or start of buffer C-u C-SPC
  
 ### YAsnippets
 insert predefined snippet C-c-&-C-s 
+
+### inserting enter in search/replace regex
+C-q C-j
+
+
+### inserting output of shell command
+C-u M-! cmd
+for example to insert current date and time 
+C-u M-! date
