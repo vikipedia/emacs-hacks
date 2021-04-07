@@ -26,6 +26,8 @@
     flycheck              ;; on the fly syntax check
     blacken               ;; Black formatting on save
     material-theme        ;; Theme
+    markdown-mode         ;; markdown mode
+    py-autopep8           ;;
     )
   )
 
@@ -49,10 +51,11 @@
 ;; ===================================
 ;; Basic Customization
 ;; ===================================
-;;(setq inhibit-startup-message t)    ;; Hide the startup message
+(setq inhibit-startup-message t)    ;; Hide the startup message
 (load-theme 'material t)            ;; Load material theme
 (global-linum-mode t)               ;; Enable line numbers globally
-
+(toggle-frame-maximized)            ;; maximize window
+(column-number-mode t)              ;; show column number as well
 ;; ====================================
 ;; Development Setup
 ;; ====================================
@@ -66,16 +69,16 @@
 ;; Enable elpy
 (elpy-enable)
 ;; rpc-venv path
-;;(setq elpy-rpc-python-command "/home/vikrant/anaconda3/bin/python")
+;;(setq elpy-rpc-python-command "python3")
 
 (setenv "WORKON_HOME" "/home/vikrant/usr/local")
-(pyvenv-activate "base")
+(pyvenv-workon "base")
 
 ;; Use Python3 for REPL
 ;;(setq python-shell-interpreter "python3"
 ;;      python-shell-prompt-detect-failure-warning nil)
 ;;(Add-to-list 'python-shell-completion-native-disabled-interpreters
-;;             "python3")
+;;             "python")
 
 ;; Enable Flycheck
 (when (require 'flycheck nil t)
@@ -83,8 +86,8 @@
   (add-hook 'elpy-mode-hook 'flycheck-mode))
 
 ;; Enable autopep8
-;;(require 'py-autopep8)
-;;(add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save) ;;I don't like autochange of my code!
+(require 'py-autopep8)
+(add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save) ;;I don't like autochange of my code!
 
 
 
@@ -106,7 +109,7 @@
   :ensure t
   :config
   (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
-;  (setq projectile-completion-system 'ivy)
+  (setq projectile-completion-system 'ivy)
   (projectile-mode +1))
 
 ; Sidebar navigation with extras
@@ -129,10 +132,38 @@
   :ensure t)
 
 
-; Simple docker interface
-(use-package docker
+;; INFO settings
+(require 'info)
+(setq Info-directory-list
+(cons (expand-file-name "/home/vikrant/.local/share/info") ; here is where my SICP.info file is!
+      Info-default-directory-list))
+
+;; org mode settings
+(setq org-todo-keywords
+      '((sequence "WISHLIST" "TODO" "DOING" "|" "DONE" "DELEGATED")))
+;; flyspell mode for spell checking everywhere
+(add-hook 'org-mode-hook 'turn-on-flyspell 'append)
+
+
+(dolist (hook '(text-mode-hook)) ;; spellcheck
+  (add-hook hook (lambda () (flyspell-mode 1))))
+
+(use-package markdown-mode
   :ensure t
-  :bind ("C-c d" . docker))
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :init (setq markdown-command "multimarkdown"))
+
+
+;; yaml mode settings
+(add-to-list 'load-path "~/.emacs.d/other/")
+(require 'yaml-mode)
+(add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+(add-hook 'yaml-mode-hook
+      '(lambda ()
+        (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
+
 
 ;; User-Defined init.el ends here
 (custom-set-variables
@@ -141,9 +172,10 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("d4f8fcc20d4b44bf5796196dbeabec42078c2ddb16dcb6ec145a1c610e0842f3" "afd761c9b0f52ac19764b99d7a4d871fc329f7392dfc6cd29710e8209c691477" default))
- '(package-selected-packages '(lsp-mode material-theme better-defaults))
- '(python-shell-interpreter "python"))
+   (quote
+    ("d4f8fcc20d4b44bf5796196dbeabec42078c2ddb16dcb6ec145a1c610e0842f3" "afd761c9b0f52ac19764b99d7a4d871fc329f7392dfc6cd29710e8209c691477" default)))
+ '(package-selected-packages (quote (lsp-mode material-theme better-defaults)))
+ '(python-shell-interpreter "python3"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

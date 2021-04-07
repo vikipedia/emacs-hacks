@@ -34,3 +34,7 @@ C-q C-j
 C-u M-! cmd
 for example to insert current date and time 
 C-u M-! date
+
+### Switch buffer
+C-x [left]  move previous buffer to current space
+C-x [right] move next buffer to current space
