@@ -38,3 +38,8 @@ C-u M-! date
 ### Switch buffer
 C-x [left]  move previous buffer to current space
 C-x [right] move next buffer to current space
+
+### increase/decrease font size
+C-x C-+ to increase
+C-x C-+ to decrease
+after one stroke of increase or decrese immediately just +/- can be used to alter size of font
