@@ -13,9 +13,6 @@
 ;; Initializes the package infrastructure
 (package-initialize)
 
-(use-package org
-  :pin gnu)
-
 ;; If there are no archived package contents, refresh them
 (when(not package-archive-contents)
   (package-refresh-contents))
@@ -68,11 +65,12 @@
 ;; Enable elpy
 (elpy-enable)
 ;; rpc-venv path
-(setq elpy-rpc-python-command "python3")
+;;(setq elpy-rpc-python-command "python3")
 
 (setenv "WORKON_HOME" "/home/vikrant/usr/local")
 (defalias 'workon 'pyvenv-workon)
 (workon "default")
+(setq elpy-rpc-virtualenv-path 'current)
 
 ;; Use Python3 for REPL
 ;; (setq python-shell-interpreter "python3"
@@ -175,6 +173,9 @@
   ;; If using org-roam-protocol
   (require 'org-roam-protocol))
 
+
+(server-start)
+
 ;; (use-package org-roam
 ;;   :after org
 ;;   :init (setq org-roam-v2-ack t) ;; Acknowledge V2 upgrade
@@ -230,7 +231,8 @@
  '(flycheck-checker-error-threshold 500)
  '(hl-sexp-background-color "#1c1f26")
  '(ispell-dictionary nil)
- '(package-selected-packages '(org-roam lsp-mode material-theme better-defaults))
+ '(package-selected-packages
+   '(racket-mode org-roam lsp-mode material-theme better-defaults))
  '(python-shell-interpreter "python3")
  '(vc-annotate-background nil)
  '(vc-annotate-color-map
