@@ -138,7 +138,7 @@
 
 ;; org mode settings
 (setq org-todo-keywords
-      '((sequence "WISHLIST" "TODO" "DOING" "|" "DONE" "DELEGATED")))
+      '((sequence "WISHLIST" "TODO" "DOING" "|" "CANCELLED" "DONE" "DELEGATED")))
 ;; Improve org mode looks
 (setq org-startup-indented t
       ;; org-pretty-entities t
@@ -147,6 +147,10 @@
       org-image-actual-width '(300))
 ;; flyspell mode for spell checking everywhere
 (add-hook 'org-mode-hook 'turn-on-flyspell 'append)
+(setq org-agenda-files (quote ("~/Documents/MiA2 Documents/org_agenda/"
+			       "~/programming/work/github/Rumi-dev"
+			       "~/programming/work/github/chitragupta"
+			       "~/Documents/org_roam_dir")))
 
 
 
@@ -228,7 +232,7 @@
    '("90a6f96a4665a6a56e36dec873a15cbedf761c51ec08dd993d6604e32dd45940" "d4f8fcc20d4b44bf5796196dbeabec42078c2ddb16dcb6ec145a1c610e0842f3" "afd761c9b0f52ac19764b99d7a4d871fc329f7392dfc6cd29710e8209c691477" default))
  '(elpy-test-runner 'elpy-test-pytest-runner)
  '(fci-rule-color "#37474f")
- '(flycheck-checker-error-threshold 500)
+ '(flycheck-checker-error-threshold 700)
  '(hl-sexp-background-color "#1c1f26")
  '(ispell-dictionary nil)
  '(package-selected-packages
