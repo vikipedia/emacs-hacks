@@ -61,10 +61,6 @@
 ;; ====================================
 
 
-(setenv "PATH"
-  (let ((current (getenv "PATH"))
-        (new "/home/vikrant/anaconda3/bin/"))
-    (if current (concat new ":" current) new)))
 
 ;; Enable elpy
 (elpy-enable)
@@ -72,10 +68,12 @@
 ;;(setq elpy-rpc-python-command "python3")
 
 (setenv "WORKON_HOME" "/home/vikrant/usr/local")
-(pyvenv-workon "base")
+(defalias 'workon 'pyvenv-workon)
+(workon "default")
+(setq elpy-rpc-virtualenv-path 'current)
 
 ;; Use Python3 for REPL
-;;(setq python-shell-interpreter "python3"
+;; (setq python-shell-interpreter "python3"
 ;;      python-shell-prompt-detect-failure-warning nil)
 ;;(Add-to-list 'python-shell-completion-native-disabled-interpreters
 ;;             "python")
@@ -87,7 +85,7 @@
 
 ;; Enable autopep8
 (require 'py-autopep8)
-(add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save) ;;I don't like autochange of my code!
+(add-hook 'elpy-mode-hook 'py-autopep8-mode) ;;I don't like autochange of my code, but t is helpful many times!
 
 
 
@@ -104,13 +102,13 @@
   :config
   (global-company-mode))
 
-; Project management and tools
-(use-package projectile
-  :ensure t
-  :config
-  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
-  (setq projectile-completion-system 'ivy)
-  (projectile-mode +1))
+;; ; Project management and tools
+;; (use-package projectile
+;;   :ensure t
+;;   :config
+;;   (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+;;   (setq projectile-completion-system 'ivy)
+;;   (projectile-mode +1))
 
 ; Sidebar navigation with extras
 (use-package treemacs
@@ -121,10 +119,10 @@
   (treemacs-follow-mode -1)
   (add-hook 'treemacs-mode-hook (lambda() (display-line-numbers-mode -1))))
 
-; Unifies projectile and treemacs
-(use-package treemacs-projectile
-  :after (treemacs projectile)
-  :ensure t)
+;; ; Unifies projectile and treemacs
+;; (use-package treemacs-projectile
+;;   :after (treemacs projectile)
+;;   :ensure t)
 
 ; Makes treemacs show different colors for committed, staged and modified files
 (use-package treemacs-magit
@@ -140,9 +138,64 @@
 
 ;; org mode settings
 (setq org-todo-keywords
-      '((sequence "WISHLIST" "TODO" "DOING" "|" "DONE" "DELEGATED")))
+      '((sequence "TODO" "WISHLIST" "DOING" "|" "DONE" "CANCELLED" "DELEGATED")))
+;; Improve org mode looks
+(setq org-startup-indented t
+      ;; org-pretty-entities t
+      org-hide-emphasis-markers t
+      org-startup-with-inline-images t
+      org-image-actual-width '(300))
 ;; flyspell mode for spell checking everywhere
 (add-hook 'org-mode-hook 'turn-on-flyspell 'append)
+(setq org-agenda-files (quote ("/home/vikrant/"
+			       "~/Documents/MiA2 Documents/org_agenda/"
+			       "~/programming/work/github/Rumi-dev"
+			       "~/programming/work/github/chitragupta")))
+
+
+
+;; Org-Roam basic configuration
+(setq org-directory (concat (getenv "HOME") "/Documents/org_roam_dir"))
+
+
+(use-package org-roam
+  :ensure t
+  :init (setq org-roam-v2-ack t) ;; Acknowledge V2 upgrade
+  :custom
+  (org-roam-directory (file-truename org-directory))
+  :bind (("C-c n l" . org-roam-buffer-toggle)
+	 ("C-c n f" . org-roam-node-find)
+	 ("C-c n g" . org-roam-graph)
+	 ("C-c n i" . org-roam-node-insert)
+	 ("C-c n c" . org-roam-capture)
+	 ;; Dailies
+	 ("C-c n j" . org-roam-dailies-capture-today))
+  :config
+  ;; If you're using a vertical completion framework, you might want a more informative completion interface
+  (setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
+  (org-roam-db-autosync-mode)
+  ;; If using org-roam-protocol
+  (require 'org-roam-protocol))
+
+
+(server-start)
+
+;; (use-package org-roam
+;;   :after org
+;;   :init (setq org-roam-v2-ack t) ;; Acknowledge V2 upgrade
+;;   :custom
+;;   (org-roam-directory (file-truename org-directory))
+;;   :config
+;;   (org-roam-setup)
+;;   :bind (("C-c n f" . org-roam-node-find)
+;; 	 ("C-c n r" . org-roam-node-random)		    
+;; 	 (:map org-mode-map
+;; 	       (("C-c n i" . org-roam-node-insert)
+;; 		("C-c n o" . org-id-get-create)
+;; 		("C-c n t" . org-roam-tag-add)
+;; 		("C-c n a" . org-roam-alias-add)
+;; 		("C-c n l" . org-roam-buffer-toggle)))))
+
 
 
 (dolist (hook '(text-mode-hook)) ;; spellcheck
@@ -150,6 +203,7 @@
 
 (use-package markdown-mode
   :ensure t
+  :commands (markdown-mode gfm-mode)
   :mode (("README\\.md\\'" . gfm-mode)
          ("\\.md\\'" . markdown-mode)
          ("\\.markdown\\'" . markdown-mode))
@@ -164,6 +218,8 @@
       '(lambda ()
         (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
 
+(global-set-key (kbd "C-c a") #'org-agenda)
+(global-set-key (kbd "C-c c") #'org-capture)
 
 ;; User-Defined init.el ends here
 (custom-set-variables
@@ -171,11 +227,39 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(ansi-color-faces-vector
+   [default bold shadow italic underline bold bold-italic bold])
  '(custom-safe-themes
-   (quote
-    ("d4f8fcc20d4b44bf5796196dbeabec42078c2ddb16dcb6ec145a1c610e0842f3" "afd761c9b0f52ac19764b99d7a4d871fc329f7392dfc6cd29710e8209c691477" default)))
- '(package-selected-packages (quote (lsp-mode material-theme better-defaults)))
- '(python-shell-interpreter "python3"))
+   '("90a6f96a4665a6a56e36dec873a15cbedf761c51ec08dd993d6604e32dd45940" "d4f8fcc20d4b44bf5796196dbeabec42078c2ddb16dcb6ec145a1c610e0842f3" "afd761c9b0f52ac19764b99d7a4d871fc329f7392dfc6cd29710e8209c691477" default))
+ '(elpy-test-runner 'elpy-test-pytest-runner)
+ '(fci-rule-color "#37474f")
+ '(flycheck-checker-error-threshold 700)
+ '(hl-sexp-background-color "#1c1f26")
+ '(ispell-dictionary nil)
+ '(package-selected-packages
+   '(racket-mode org-roam lsp-mode material-theme better-defaults))
+ '(python-shell-interpreter "python3")
+ '(vc-annotate-background nil)
+ '(vc-annotate-color-map
+   '((20 . "#f36c60")
+     (40 . "#ff9800")
+     (60 . "#fff59d")
+     (80 . "#8bc34a")
+     (100 . "#81d4fa")
+     (120 . "#4dd0e1")
+     (140 . "#b39ddb")
+     (160 . "#f36c60")
+     (180 . "#ff9800")
+     (200 . "#fff59d")
+     (220 . "#8bc34a")
+     (240 . "#81d4fa")
+     (260 . "#4dd0e1")
+     (280 . "#b39ddb")
+     (300 . "#f36c60")
+     (320 . "#ff9800")
+     (340 . "#fff59d")
+     (360 . "#8bc34a")))
+ '(vc-annotate-very-old-color nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
