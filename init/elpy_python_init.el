@@ -138,7 +138,7 @@
 
 ;; org mode settings
 (setq org-todo-keywords
-      '((sequence "TODO" "WISHLIST" "DOING" "|" "DONE" "CANCELLED" "DELEGATED")))
+      '((sequence "WISHLIST"  "TODO"  "|" "DONE" "CANCELLED" "DELEGATED")))
 ;; Improve org mode looks
 (setq org-startup-indented t
       ;; org-pretty-entities t
@@ -147,15 +147,14 @@
       org-image-actual-width '(300))
 ;; flyspell mode for spell checking everywhere
 (add-hook 'org-mode-hook 'turn-on-flyspell 'append)
-(setq org-agenda-files (quote ("/home/vikrant/"
-			       "~/Documents/MiA2 Documents/org_agenda/"
+(setq org-agenda-files (quote ("~/Documents/MiA2 Documents/org_agenda/"
 			       "~/programming/work/github/Rumi-dev"
 			       "~/programming/work/github/chitragupta")))
 
-
-
+(setq org-default-notes-file "~/Documents/MiA2 Documents/org_agenda/unfiled.org")
 ;; Org-Roam basic configuration
-(setq org-directory (concat (getenv "HOME") "/Documents/org_roam_dir"))
+(setq org-directory (concat (getenv "HOME") "/Documents/MiA2 Documents/org_roam_dir"))
+
 
 
 (use-package org-roam
@@ -176,9 +175,6 @@
   (org-roam-db-autosync-mode)
   ;; If using org-roam-protocol
   (require 'org-roam-protocol))
-
-
-(server-start)
 
 ;; (use-package org-roam
 ;;   :after org
@@ -221,6 +217,7 @@
 (global-set-key (kbd "C-c a") #'org-agenda)
 (global-set-key (kbd "C-c c") #'org-capture)
 
+(server-start)
 ;; User-Defined init.el ends here
 (custom-set-variables
  ;; custom-set-variables was added by Custom.

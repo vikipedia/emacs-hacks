@@ -43,3 +43,9 @@ C-x [right] move next buffer to current space
 C-x C-+ to increase
 C-x C-+ to decrease
 after one stroke of increase or decrese immediately just +/- can be used to alter size of font
+
+### goto line
+M-g M-g
+
+### search word under cursor
+M-b C-s C-w -> M-b will move cursor to word start, C-s will start search, C-w will add current word to search
