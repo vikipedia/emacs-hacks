@@ -7,6 +7,14 @@ org-roam installation is very tricky.
 1. if installation succeeds, open init.el and uncomment org-roam settings.
 1. relaunch emacs and search for org-roam node.
 
+# Database Error: sqlite_open_v2() failed", 14 
+this happens due to ~ in path or relative path. it can be fixed with
+this addition in init file
+```
+(setq org-roam-db-location
+      (expand-file-name (locate-user-emacs-file "org-roam.db")))
+```
+
 ### How to deal with this message : IMPORTANT: please install Org from GNU ELPA as Org ELPA will close before Org 9.6
 (from stack overflow.)
 In my experience there are 4 step you may need to take to avoid this annoying message:
